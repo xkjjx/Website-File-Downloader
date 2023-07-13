@@ -3,16 +3,9 @@ import tkinter as tk
 from processing import full
 def submit():
     try:
-        website = websiteEntry.get()
-        extensions = extensionsEntry.get().split(",")
-        folder = folderEntry.get()
-        successes,failures = full(website,extensions,folder,False)
-        print("Website:", website)
-        print("Extensions:", extensions)
-        print("Folder:", folder)
-        print("Use source file name for local file names:", useSourceFileNameState.get())
-        print("Select that:", indexedFileNameState.get())
-        message = str(len(successes)) + " files succesfully downloaded"
+        website,extensions,folder = websiteEntry.get(),extensionsEntry.get().split(","),folderEntry.get()
+        successes,failures = full(website,extensions,folder,indexedFileNameState.get())
+        message = str(len(successes)) + " files succesfully downloaded\n"
         for success in successes:
             message += "File succesfully downloaded from: " + success + "\n"
         for failure in failures:
@@ -21,10 +14,13 @@ def submit():
         messageLabel.insert("end", message)
 
         messageLabel.configure(state="disabled")
+    except ValueError:
+        messageLabel.configure(state="normal")
+        messageLabel.insert("end", "Entry invalid\n")
+        messageLabel.configure(state="disabled")
     except:
         messageLabel.configure(state="normal")
-        messageLabel.insert("end", sys.exc_info())
-
+        messageLabel.insert("end", str(sys.exc_info()) + "\n")
         messageLabel.configure(state="disabled")
 
 def xor1():
@@ -39,7 +35,7 @@ root = tk.Tk()
 root.title("Website file downloader")
 
 # Set the desired window size
-window_width = 800
+window_width = 1200
 window_height = 1000
 
 # Get the screen width and height
@@ -56,20 +52,20 @@ root.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
 # Website URL
 websiteLabel = tk.Label(root, text="Website:")
 websiteLabel.pack(pady=10)
-websiteEntry = tk.Entry(root)
-websiteEntry.pack(pady=5, padx=20, fill=tk.X)
+websiteEntry = tk.Entry(root,width=100)
+websiteEntry.pack(pady=5, padx=20)
 
 # File Extensions
 extensionsLabel = tk.Label(root, text="File Extensions (comma-separated):")
 extensionsLabel.pack(pady=10)
-extensionsEntry = tk.Entry(root)
-extensionsEntry.pack(pady=5, padx=20, fill=tk.X)
+extensionsEntry = tk.Entry(root,width=100)
+extensionsEntry.pack(pady=5, padx=20)
 
 # Folder Name
 folderLabel = tk.Label(root, text="Folder Name:")
 folderLabel.pack(pady=10)
-folderEntry = tk.Entry(root)
-folderEntry.pack(pady=5, padx=20, fill=tk.X)
+folderEntry = tk.Entry(root,width=100)
+folderEntry.pack(pady=5, padx=20)
 # Check Boxes
 
 useSourceFileNameState = tk.BooleanVar(value=True)
@@ -83,7 +79,6 @@ indexedFileNameCheckbox.pack(pady=5)
 # Submit Button
 submitButton = tk.Button(root, text="Submit", command=submit)
 submitButton.pack(pady=10)
-
 
 # Create a scrollable frame
 scrollableFrame = tk.Frame(root)
@@ -102,7 +97,7 @@ scrollbar.pack(side="right", fill="y")
 messageLabel.configure(yscrollcommand=scrollbar.set)
 messageLabel.configure(state="disabled",background="#ececec")
 
-root.mainloop()
-
+warningsAndInfo = tk.Label(root,text="WARNING: This program works best with simple websites")
+warningsAndInfo.pack(pady=10)
 
 root.mainloop()

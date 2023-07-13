@@ -3,6 +3,9 @@ import urllib.request as r
 from urllib.parse import urlparse
 import os
 
+def getExtension(s):
+    return s.split(".")[-1]
+
 hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
        'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.3',
@@ -32,7 +35,7 @@ def getFileNames(fileLinks,url,extensions):
             if fName != "":
                 fileLinks.append(fName)
 
-def downloadFiles(url,links,folder,indexNaming = False):
+def downloadFiles(url,links,folder,indexNaming):
     success = []
     failures = []
     i = 0
@@ -42,17 +45,17 @@ def downloadFiles(url,links,folder,indexNaming = False):
         pageURL = link.replace(" ", "_")
         try:
             if indexNaming:
-                r.urlretrieve(pageURL, filename = str(i))
+                r.urlretrieve(pageURL, filename = folder + "/" + str(i) + "." + getExtension(pageURL))
             else:
                 r.urlretrieve(link, filename = folder + "/" + link.replace("-", " ").replace("/","_"))
             success.append(pageURL)
         except:
             try:
                 if indexNaming:
-                    r.urlretrieve(getParentDirectoryUrl(url) + "/" + pageURL, filename = str(i))
+                    r.urlretrieve(getParentDirectoryUrl(url) + "/" + pageURL, filename = folder + "/" + str(i) + "." + getExtension(pageURL))
                 else:
                     r.urlretrieve(getParentDirectoryUrl(url) + "/" + pageURL, filename = folder + "/" + link.replace("-", "_").replace("/","_"))
-                success.append(pageURL)
+                success.append(getParentDirectoryUrl(url) + "/" + pageURL)
             except:
                 print(sys.exc_info())
                 print(folder,folder + "/" + link.replace("-", " ").replace(".", " "))
@@ -66,7 +69,7 @@ def downloadFiles(url,links,folder,indexNaming = False):
 def full(url,extensions,folderName,indexNaming):
     fileLinks = []
     getFileNames(fileLinks,url,extensions)
-    return downloadFiles(url,fileLinks,folderName,indexNaming=False)
+    return downloadFiles(url,fileLinks,folderName,indexNaming)
 
 
 
