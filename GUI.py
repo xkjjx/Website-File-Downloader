@@ -12,8 +12,10 @@ def submit():
             message += "File cannot be downloaded from: " + failure + "\n"
         messageLabel.configure(state="normal")
         messageLabel.insert("end", message)
-
         messageLabel.configure(state="disabled")
+        websiteEntry.delete(0,tk.END)
+        extensionsEntry.delete(0, tk.END)
+        folderEntry.delete(0, tk.END)
     except ValueError:
         messageLabel.configure(state="normal")
         messageLabel.insert("end", "Entry invalid\n")
@@ -33,6 +35,7 @@ def xor2():
 
 root = tk.Tk()
 root.title("Website file downloader")
+
 
 # Set the desired window size
 window_width = 1200
@@ -95,9 +98,9 @@ scrollbar.pack(side="right", fill="y")
 
 # Configure the message label widget to use the scrollbar
 messageLabel.configure(yscrollcommand=scrollbar.set)
-messageLabel.configure(state="disabled",background="#ececec")
+messageLabel.configure(state="disabled",background="#ccc")
 
-warningsAndInfo = tk.Label(root,text="WARNING: This program works best with simple websites")
+warningsAndInfo = tk.Label(root,text="WARNING: This program works best with simple websites\n")
 warningsAndInfo.pack(pady=10)
 
 root.mainloop()

@@ -39,22 +39,28 @@ def downloadFiles(url,links,folder,indexNaming):
     success = []
     failures = []
     i = 0
-    if not os.path.exists(folder):
-        os.makedirs(folder)
+    folderPath = os.path.join(os.path.expanduser("~"),"Downloads",folder)
+    if not os.path.exists(folderPath):
+        os.mkdir(folderPath)
     for link in links:
         pageURL = link.replace(" ", "_")
+        if indexNaming:
+            fName = os.path.join(folderPath,str(i) + "." + getExtension(pageURL))
+        else:
+            fName = os.path.join(folderPath,link.replace("-", " ").replace("/","_"))
+        print(fName)
         try:
             if indexNaming:
-                r.urlretrieve(pageURL, filename = folder + "/" + str(i) + "." + getExtension(pageURL))
+                r.urlretrieve(pageURL, filename = fName)
             else:
-                r.urlretrieve(link, filename = folder + "/" + link.replace("-", " ").replace("/","_"))
+                r.urlretrieve(link, filename = fName)
             success.append(pageURL)
         except:
             try:
                 if indexNaming:
-                    r.urlretrieve(getParentDirectoryUrl(url) + "/" + pageURL, filename = folder + "/" + str(i) + "." + getExtension(pageURL))
+                    r.urlretrieve(getParentDirectoryUrl(url) + "/" + pageURL, filename = fName)
                 else:
-                    r.urlretrieve(getParentDirectoryUrl(url) + "/" + pageURL, filename = folder + "/" + link.replace("-", "_").replace("/","_"))
+                    r.urlretrieve(getParentDirectoryUrl(url) + "/" + pageURL, filename = fName)
                 success.append(getParentDirectoryUrl(url) + "/" + pageURL)
             except:
                 print(sys.exc_info())
