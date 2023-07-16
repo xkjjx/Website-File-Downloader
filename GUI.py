@@ -34,7 +34,7 @@ def xor2():
 
 
 root = tk.Tk()
-root.title("Website file downloader")
+root.title("Website File Downloader")
 
 
 # Set the desired window size
